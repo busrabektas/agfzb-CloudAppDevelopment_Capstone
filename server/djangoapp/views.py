@@ -9,6 +9,8 @@ from django.contrib import messages
 from datetime import datetime
 import logging
 import json
+from .restapis import get_dealers_from_cf, get_request, get_dealer_reviews_from_cf
+
 
 # Get an instance of a logger
 logger = logging.getLogger(__name__)
@@ -83,17 +85,55 @@ def registration_request(request):
 
 # Update the `get_dealerships` view to render the index page with a list of dealerships
 def get_dealerships(request):
-    context = {}
+
     if request.method == "GET":
-        url = "https://bektasbu-3000.theiadocker-0-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/dealerships/get"
+
+        context = {}
+
+        url =  "https://bektasbu-3000.theiadocker-0-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/dealerships/get"
+
+        dealerships = get_dealers_from_cf(url)
+
+        context["dealershps_list"] = dealerships
+
+       
+
         return render(request, 'djangoapp/index.html', context)
 
 
 # Create a `get_dealer_details` view to render the reviews of a dealer
-# def get_dealer_details(request, dealer_id):
-# ...
+def get_dealer_details(request, dealer_id):
+    if request.method == "GET":
+        context = {}
+
+        url = "https://bektasbu-5000.theiadocker-0-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai//api/get_reviews?id=15"
+        reviews = get_dealer_reviews_from_cf(url,dealer_id)
+        context = {reviews} 
+        review_details = ''.join([review.id for review in reviews])
+        for review in review_details:
+            print(review.sentiment)
+        return render(request,'djangoapp/dealer_details.html',context)         
+
 
 # Create a `add_review` view to submit a review
-# def add_review(request, dealer_id):
-# ...
+def add_review(request, dealer_id):
+    context={}
+    if request.method=="POST":
+        username=request.POST['username']
+        password=request.POST['psw']
+        user=authenticate(username=username,password=password)
+        if user is not None:
+            review["time"]=datetime.utcnow().isoformat()
+            review["dealership"]=11
+            review["review"]="This is a great car dealer"
+            review["name"]="dealer1"
 
+            json_payload["review"]=review
+            review_response=post_request(url,json_payload, dealer_id=dealer_id)
+            print(review_response)
+            return HttpResponse(review_response)
+    if request.method=="GET":
+        json_payload["review"]=review
+        review["time"]=datetime.utcnow.isoformat(review["time"])
+        review["purchase"]=car.year.strftime("%Y")
+        redirect("djangoapp:dealer_details", dealer_id=dealer_id)
