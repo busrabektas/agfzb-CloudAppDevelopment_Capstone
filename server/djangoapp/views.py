@@ -85,6 +85,7 @@ def registration_request(request):
 def get_dealerships(request):
     context = {}
     if request.method == "GET":
+        url = "https://bektasbu-3000.theiadocker-0-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/dealerships/get"
         return render(request, 'djangoapp/index.html', context)
 
 
