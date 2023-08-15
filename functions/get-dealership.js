@@ -8,7 +8,7 @@ const Cloudant = require('@cloudant/cloudant');
 function dbCloudantConnect() {
     return new Promise((resolve, reject) => {
         Cloudant({  // eslint-disable-line
-            url: "https://apikey-v2-371tn3fzxfxz8e3hajj4yh6ks1vtw1fnxknydon9snpw:5e7967ba1032168c311d0ab51c65e0d7@6dc13f8d-24fe-4f22-9869-746312ac95c3-bluemix.cloudantnosqldb.appdomain.cloud" //please enter your url here
+            url: "" //please enter your url here
         }, ((err, cloudant) => {
             if (err) {
                 console.error('Connect failure: ' + err.message + ' for Cloudant DB');
